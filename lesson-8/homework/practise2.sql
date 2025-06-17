@@ -52,7 +52,7 @@ from Orders;
 -- January to find those who did not have invoices.
 Select distinct o.CustomerID
 from Orders o
-left join Invoices i
+   join Invoices i
   on o.CustomerID = i.CustomerID
   and i.InvoiceDate >= '2023-01-01' and i.InvoiceDate < '2023-02-01'
 where o.OrderDate >= '2023-01-01' and o.OrderDate < '2023-02-01'
@@ -71,7 +71,7 @@ Union
 Select ProductName from Products_Discounted
 
 --13. Using Orders table, find the average order amount by year.
-Select Year(OrderDate) as Year, AVG(OrderID) as AverageOrderAmount
+Select Year(OrderDate) as Year, AVG(TotalAmount) as AverageOrderAmount
 from Orders
 Group by Year(OrderDate);
 
@@ -106,16 +106,13 @@ where ProductName Like '%oo%';
 --18. Using City_Population table, use Pivot to show values of City column in 
 -- seperate columns (Bektemir, Chilonzor, Yakkasaroy) and copy results to a 
 --new Population_Each_City table.
-Select Year, Bektemir, Chilonzor, Yakkasaroy
+Select district_id,Year, Bektemir, Chilonzor, Yakkasaroy
 into  Population_Each_City
-From (Select district_name, Year, population from City_Population) as SourceTable
+From (Select district_id, district_name, Year, population from City_Population) as SourceTable
 pivot(sum(Population) for district_name in (Bektemir, Chilonzor, Yakkasaroy)) as PivotTable;
-drop table Population_Each_City 
-Select * from Population_Each_City 
 --19. Using Invoices table, show top 3 customers with the highest total invoice
 -- amount. Return CustomerID and Totalspent.
-Select * from Invoices 
-Select top 3 CustomerID, Max(TotalAmount) as TotalSpent
+Select top 3 CustomerID, Sum(TotalAmount) as TotalSpent
 from Invoices
 Group by CustomerID
 Order by TotalSpent desc;
@@ -136,7 +133,7 @@ join Sales s On p.ProductID=s.ProductID
 Group by p.ProductName;
 
 --22. Transform Population_Each_City table to its original format (City_Population).
-Select [district_name], population, Year 
+Select district_id, [district_name], population, Year 
 from Population_Each_City
 unpivot(population for [district_name] in (Bektemir, Chilonzor, Yakkasaroy)) as UnpivotedTable;
 
