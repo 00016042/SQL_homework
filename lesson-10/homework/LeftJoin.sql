@@ -20,8 +20,8 @@ Where Year(o.OrderDate) = 2023;
 --with their department names. Include employees who do not belong to any department.
 --Expected Columns: EmployeeName, DepartmentName
 Select e.Name as EmployeeName, d.DepartmentName 
-from Departments d
-Left Join Employees e on d.DepartmentID = e.DepartmentID;
+from Employees e
+left join Departments d on e.DepartmentID = d.DepartmentID;
 
 --4 Using the Products and Suppliers tables, write a query to list all suppliers and the
 --products they supply. Show suppliers even if they don’t supply any product.
@@ -83,10 +83,10 @@ Where s.SaleID is null;
 
 --12. Using the Customers and Orders tables, write a query to return customer names who
 -- have placed at least one order. Expected Columns: FirstName, LastName, TotalOrders
-Select c.FirstName, c.LastName, o.Quantity as TotalOrders
+Select c.FirstName, c.LastName, Count(o.OrderID) as TotalOrders
 from Customers c
-Join Orders o on c.CustomerID=o.CustomerID
-Where o.Quantity > 0;
+join Orders o on c.CustomerID = o.CustomerID
+group by c.FirstName, c.LastName;
 
 --13. Using the Employees and Departments tables, write a query to show only those records
 -- where both employee and department exist (no NULLs). Expected Columns: EmployeeName,DepartmentName
